@@ -1,0 +1,145 @@
+#header {
+  height: 2px !important;
+  overflow: hidden;
+  position: absolute !important;
+  width: 100%; padding: 0 20px !important;
+  box-sizing: border-box;
+}
+#tongue::before {
+  content: "⬇";
+  position: absolute;
+  display: block;
+  padding: 8px 8px 8px;
+  background: #256188;
+  color: #fff;
+  top: 0%;
+  right: 20px;
+  box-shadow: 0 2px 1px black;
+  -webkit-border-bottom-right-radius: 20px;
+  -webkit-border-bottom-left-radius: 20px;
+  -moz-border-radius-bottomright: 20px;
+  -moz-border-radius-bottomleft: 20px;
+  border-bottom-right-radius: 20px;
+  border-bottom-left-radius: 20px;
+}
+#tongue {
+  position: absolute;
+  width: 16px;
+  right: 0;
+  top: 0;
+  cursor: pointer;
+}
+#tongue.expanded {
+  top: 46px;
+}
+#tongue.expanded::before {
+  content: "⬆";
+}
+#header * { opacity: 0; height: 0 !important; pointer-events: none; }
+
+#header, #header + * {
+  -webkit-transition: height 0.2s ease-in-out;
+  -moz-transition: height 0.2s ease-in-out;
+  -o-transition: height 0.2s ease-in-out;
+  transition: height 0.2s ease-in-out;
+  -webkit-transition: padding 0.2s ease-in-out;
+  -moz-transition: padding 0.2s ease-in-out;
+  -o-transition: padding 0.2s ease-in-out;
+  transition: padding 0.2s ease-in-out;
+}
+#header.expanded {
+  height: 46px !important;
+  overflow: visible !important;
+}
+#header.expanded * {opacity: 1; height: auto !important; pointer-events: auto;}
+#header + * {
+  padding-top: 2px;
+}
+#header.expanded + * {
+  padding-top: 46px;
+}
+#project_name_row {
+display: none;
+}
+#controlPanel { height: auto !important; padding: 8px 0; } 
+* {
+font-family: 'Proxima Nova', 'Helvetica', 'Ariel', san-serif;
+}
+
+a.show_unassigned::before {
+  content: "Unassigned Stories";
+}
+a.show_unassigned.reset::before {
+  content: "Reset (Show All)";
+}
+
+
+a.storyOwnerInitials:hover {
+  color: #fff;
+  text-decoration: none !important;
+}
+li.dropdown_menu.toggle_user {
+  position: relative;
+}
+
+li.tweaker_menu {
+  margin-left: 10px;
+}
+
+li.dropdown_menu.toggle_user:hover > a {
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+  background: #fff;
+  z-index: 3;
+  position: relative;
+  border: 1px solid black;
+  border-bottom: 0;
+}
+
+li.dropdown_menu.toggle_user:hover > a {
+  color: #059 !important;
+  margin-top: -1px;
+  margin-left: -1px;
+}
+
+.toggle_user_menu:hover, li.dropdown_menu.toggle_user:active .toggle_user_menu, li.dropdown_menu.toggle_user:hover .toggle_user_menu, li.dropdown_menu.toggle_user a:active .toggle_user_menu {
+  display: block;
+}
+li.dropdown_menu.toggle_user .toggle_user_menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  min-width: 105%;
+  z-index: 2;
+  background: #fff;
+  border-bottom-left-radius: 3px;
+  border-bottom-right-radius: 3px;
+  border-top-right-radius: 3px;
+  border: 1px solid black;
+  margin-top: -1px;
+  margin-left: -1px;
+}
+
+li.dropdown_menu.toggle_user .toggle_user_menu a:hover {
+  background: #f9f9f9;
+}
+li.dropdown_menu.toggle_user .toggle_user_menu a:first-of-type {
+  border-top-right-radius: 3px;
+}
+li.dropdown_menu.toggle_user .toggle_user_menu a:last-of-type {
+  border-bottom-left-radius: 3px;
+  border-bottom-right-radius: 3px;
+}
+li.dropdown_menu.toggle_user .toggle_user_menu a {
+  display: block;
+  font-size: 12px;
+  text-decoration: none;
+  padding: 6px;
+  white-space: nowrap;
+}
+li.toggle_user .toggle_user_menu a.divider {
+  background: #ddd;
+  height: 1px;
+  padding: 0;
+  pointer-events: none;
+}
