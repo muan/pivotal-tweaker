@@ -24,12 +24,6 @@ Submit all pull requests against master branch. Edge features please make opt-ou
 
 ## To-dos
 
-##### Bugs
-
-1. Landing on a story page and then deleting the story doesn't trigger hash change hence user list won't be loaded.
-
-##### Features
-
 1. Show requester on stories
 2. Costomisable current user tag colour
 3. Default focus on one particular user's stories

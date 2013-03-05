@@ -5,9 +5,28 @@ chrome.extension.sendRequest({}, function(settings) {
 
     function Tweaker () {
       this.init();
-      this.appendControls( this.getListOfUsers() );
       this.initHeader();
+      this.appendControls( this.getListOfUsers() );
+      this.checkDOMChangesForResetting();
     }
+
+    Tweaker.prototype.checkDOMChangesForResetting = function() {
+      var tweaker = this;
+
+      $("#layout > tbody > tr").first().bind( "DOMNodeRemoved DOMNodeRemovedFromDocument", function() {
+        if ( $("#layout > tbody > tr").length > 1 ) {
+          var reset = setInterval( function() {
+            var panel = $("#layout > tbody > tr");
+            if ( panel.length == 1 && panel.is(":visible") ) {
+              tweaker.resetAll();
+              tweaker.appendControls( tweaker.getListOfUsers() );
+              clearInterval( reset );
+            }
+          }, 200);
+        }
+      });
+
+    };
 
     Tweaker.prototype.init = function() {
       var tweaker = this;
@@ -195,13 +214,6 @@ chrome.extension.sendRequest({}, function(settings) {
     }
 
     var PivotalTweaker = new Tweaker();
-
-    window.onhashchange = function() {
-      PivotalTweaker.resetAll();
-      PivotalTweaker.initHeader();
-      PivotalTweaker.appendControls( PivotalTweaker.getListOfUsers() );
-    }
-
 
   }
 	}, 1000);
