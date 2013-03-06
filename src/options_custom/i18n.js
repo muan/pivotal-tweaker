@@ -50,23 +50,31 @@ this.i18n = {
     },
     "toggle": {
         "en": "Toggle",
-        "zh": "開關"
+        "zh": "控制選項"
     },
     "styling": {
         "en": "Styling",
         "zh": "視覺"
     },
+    "name placement": {
+        "en": "Do not change placement of story owner initials",
+        "zh": "不要改變人名縮寫的位置"
+    },
+    "coloured block": {
+        "en": "Change story owner initials to a coloured block",
+        "zh": "把括號內的人名縮寫變成色塊"
+    },
     "toggle with sliding effect": {
         "en": "Toggle with sliding effect",
-        "zh": "開關時顯示動畫"
+        "zh": "切換顯示＼隱藏的時候顯示動畫"
     },
     "show button for switching unassigned stories": {
         "en": "Show a button for switching unassigned stories",
-        "zh": "顯示按鈕開\\關未被分配的故事"
+        "zh": "顯示未被分配負責人的故事控制選項"
     },
     "show toggle dropdown for every member on my team": {
         "en": "Show toggle dropdown for every member on my team",
-        "zh": "顯示每一個使用者的開關"
+        "zh": "顯示每一個計畫成員的控制選項"
     },
     "enable": {
         "en": "Enable",

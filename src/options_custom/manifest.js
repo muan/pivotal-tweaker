@@ -29,15 +29,13 @@ this.manifest = {
             "group": i18n.get("styling"),
             "name": "tagOn",
             "type": "checkbox",
-            "label": i18n.get("Colour-coded member tag")
+            "label": i18n.get("coloured block")
         },
         {
             "tab": i18n.get("settings"),
             "group": i18n.get("styling"),
             "name": "tagInline",
             "type": "checkbox",
-            "label": i18n.get("Keep member tags inline")
-        },
         {
             "tab": i18n.get("settings"),
             "group": i18n.get("styling"),
@@ -45,6 +43,8 @@ this.manifest = {
             "type": "description",
             "text": i18n.get("stylingDescription")
         },
+            "label": i18n.get("name placement")
+        }
         // {
         //     "tab": i18n.get("settings"),
         //     "group": "Your name tag",
