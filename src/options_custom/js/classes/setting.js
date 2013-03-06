@@ -11,7 +11,8 @@
         "tagOn": true,
         "dropdownOn": true,
         "effectOn": true,
-        "showUnassigned": true
+        "showUnassigned": true,
+        "requesters": false
     });
     
     Bundle = new Class({

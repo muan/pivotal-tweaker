@@ -34,7 +34,7 @@ chrome.extension.sendRequest({}, function(settings) {
       console.log("You are " + tweaker.current_user + ". This is Pivotal Tweaker. ♥");
 
       // create tweaker dropdown
-      tweaker.wrapper = $('<li class="tweaker_menu dropdown_menu main_menu toggle_user"></li>');
+      tweaker.wrapper = $('<li class="tweaker_menu ready dropdown_menu main_menu copyin_toggle"></li>');
       $("#buttonPanel").append( tweaker.wrapper );
       
       // tweaker styling
@@ -42,7 +42,7 @@ chrome.extension.sendRequest({}, function(settings) {
       $("head").append( tweaker.css );
 
       // this is user menu
-      tweaker.menu = $("<div class='toggle_user_menu'></div>");
+      tweaker.menu = $("<div class='toggle_user_menu toggle_menu'></div>");
       tweaker.wrapper.append( tweaker.menu );
       
     };
@@ -74,6 +74,7 @@ chrome.extension.sendRequest({}, function(settings) {
       }
       if ( settings.tagOn ) { tweaker.giveUsersTags(users); }
       if ( settings.showUnassigned ) { tweaker.bindUnassignedStories(); }
+      if ( settings.requesters ) { tweaker.appendRequesterControls(users); }
     }
 
     Tweaker.prototype.bindToggleStoriesForAllMembers = function(users) {
@@ -82,9 +83,9 @@ chrome.extension.sendRequest({}, function(settings) {
       tweaker.wrapper.append($("<a class='tab copyin button' href='#'>Toggle Stories</a>"));
       
       $.each(users, function(index, value) {
-        tweaker.menu.append($("<a href='#' class='copyin' title='" + value + "'>" + value + "</a>"));
+        tweaker.menu.append($("<a href='#' class='copyin owner_c' title='" + value + "'>" + value + "</a>"));
         
-        $("a[title='" + value + "']").click( function() {
+        $("a.owner_c[title='" + value + "']").click( function() {
           
           if ( settings.effectOn ) { 
             $(".item[id*='itemList_story']").slideDown();
@@ -151,6 +152,77 @@ chrome.extension.sendRequest({}, function(settings) {
       });
     }
 
+    Tweaker.prototype.appendRequesterControls = function ( users ) {
+      var tweaker = this;
+      $("#buttonPanel").append( '<li class="tweaker_menu_for_requsters dropdown_menu main_menu copyin_toggle"><div class="toggle_menu toggle_requster_menu"></div></li>' );
+      tweaker.requester_btn = $("<a class='tab copyin button' href='#'>Requesters</a>");
+      tweaker.requester_menu = $(".toggle_requster_menu");
+      $(".tweaker_menu_for_requsters").append( tweaker.requester_btn );
+      tweaker.requester_btn.click( function() {
+        tweaker.loadRequesters( users );
+      });
+    }
+
+    Tweaker.prototype.loadRequesters = function( users ) {
+      var tweaker = this;
+      var allStories = $(".storyItem");
+      var i = 0;
+      
+      tweaker.requester_btn.unbind("click");
+      $("#buttonPanel").append("<li class=\"loading_req\">Loading <span class=\"count_req\">" + i + "</span>/" + allStories.length + "</li>");
+
+      var checkRequesterOnebyOne = function() {
+        element = $(allStories[i]);
+        element.find(".toggleExpandedButton").click();
+        requester = element.find("select.requester option:selected").text();
+        requesterInitial = $("a.storyOwnerInitials[title='" + requester + "']").first().text().split("/")[0];
+        if( requesterInitial ) {
+          element.attr("data-requester", requester );
+          element.find("a.storyOwnerInitials").append("<span>/"+requesterInitial+"</span>");
+        }
+        element.find(".toggleExpandedButton").click();
+        i++
+        $(".count_req").html(i);
+        
+        if (i == allStories.length) { 
+          clearInterval(check); 
+          $(".loading_req").remove(); 
+          $(".tweaker_menu_for_requsters").addClass("ready");
+        }
+      }
+      var check = setInterval( function() {
+        checkRequesterOnebyOne(); }
+      , 50 );
+
+
+      $.each(users, function(index, value) {
+        if ( value != "Show All") {
+          tweaker.requester_menu.append($("<a href='#' class='requester_c copyin' title='" + value + "'>" + value + "</a>"));
+          $("a.requester_c[title='" + value + "']").click( function() {
+            if ( settings.effectOn ) { 
+              $(".storyItem[data-requester='" + value + "']").parents(".item").slideDown();
+             } else {
+              $(".storyItem[data-requester='" + value + "']").parents(".item").show();
+            }
+
+            if ( settings.effectOn ) {
+              $(".storyItem:not([data-requester='" + value + "'])").parents(".item").slideUp();
+            } else {
+              $(".storyItem:not([data-requester='" + value + "'])").parents(".item").hide();
+            }
+          });
+        }
+      });
+
+      var unassigned = $("<a href='#' class='requester_c copyin requester_unassigned'>Unassigned</a>");
+      tweaker.requester_menu.append( unassigned );
+      unassigned.click(function() {
+        $(".item").show();
+        $(".storyItem[data-requester]").parents(".item").slideUp();
+      });
+
+    };
+
     Tweaker.prototype.giveUsersTags = function(users) {
       var tweaker = this;
       var colourCombination = [
@@ -214,6 +286,8 @@ chrome.extension.sendRequest({}, function(settings) {
     }
 
     var PivotalTweaker = new Tweaker();
+
+
 
   }
 	}, 1000);

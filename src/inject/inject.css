@@ -73,12 +73,12 @@ a.show_unassigned.reset::before {
   content: "Reset (Show All)";
 }
 
-
 a.storyOwnerInitials:hover {
   color: #fff;
   text-decoration: none !important;
 }
-li.dropdown_menu.toggle_user {
+
+li.dropdown_menu.copyin_toggle {
   position: relative;
 }
 
@@ -86,7 +86,10 @@ li.tweaker_menu {
   margin-left: 10px;
 }
 
-li.dropdown_menu.toggle_user:hover > a {
+li.dropdown_menu.copyin_toggle:not(.ready) > a::after {
+  display: none;
+}
+li.dropdown_menu.ready.copyin_toggle:hover > a {
   border-top-left-radius: 3px;
   border-top-right-radius: 3px;
   background: #fff;
@@ -94,18 +97,15 @@ li.dropdown_menu.toggle_user:hover > a {
   position: relative;
   border: 1px solid black;
   border-bottom: 0;
-}
-
-li.dropdown_menu.toggle_user:hover > a {
   color: #059 !important;
   margin-top: -1px;
   margin-left: -1px;
 }
 
-.toggle_user_menu:hover, li.dropdown_menu.toggle_user:active .toggle_user_menu, li.dropdown_menu.toggle_user:hover .toggle_user_menu, li.dropdown_menu.toggle_user a:active .toggle_user_menu {
+.toggle_menu:hover, li.dropdown_menu.copyin_toggle.ready:active .toggle_menu, li.dropdown_menu.copyin_toggle.ready:hover .toggle_menu, li.dropdown_menu.copyin_toggle.ready a:active .toggle_menu {
   display: block;
 }
-li.dropdown_menu.toggle_user .toggle_user_menu {
+li.dropdown_menu.copyin_toggle .toggle_menu {
   display: none;
   position: absolute;
   top: 100%;
@@ -120,24 +120,24 @@ li.dropdown_menu.toggle_user .toggle_user_menu {
   margin-left: -1px;
 }
 
-li.dropdown_menu.toggle_user .toggle_user_menu a:hover {
+li.dropdown_menu.copyin_toggle .toggle_menu a:hover {
   background: #f9f9f9;
 }
-li.dropdown_menu.toggle_user .toggle_user_menu a:first-of-type {
+li.dropdown_menu.copyin_toggle .toggle_menu a:first-of-type {
   border-top-right-radius: 3px;
 }
-li.dropdown_menu.toggle_user .toggle_user_menu a:last-of-type {
+li.dropdown_menu.copyin_toggle .toggle_menu a:last-of-type {
   border-bottom-left-radius: 3px;
   border-bottom-right-radius: 3px;
 }
-li.dropdown_menu.toggle_user .toggle_user_menu a {
+li.dropdown_menu.copyin_toggle .toggle_menu a {
   display: block;
   font-size: 12px;
   text-decoration: none;
   padding: 6px;
   white-space: nowrap;
 }
-li.toggle_user .toggle_user_menu a.divider {
+li.copyin_toggle .toggle_menu a.divider {
   background: #ddd;
   height: 1px;
   padding: 0;

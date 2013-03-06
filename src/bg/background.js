@@ -2,7 +2,8 @@ var settings = new Store("settings", {
   "tagOn": true,
   "dropdownOn": true,
   "effectOn": true,
-  "showUnassigned": true
+  "showUnassigned": true,
+  "requesters": false
 });
 
 chrome.extension.onRequest.addListener(

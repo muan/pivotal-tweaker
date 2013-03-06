@@ -39,14 +39,25 @@ this.i18n = {
         "en": "10 - 18 characters",
         "zh": "10 - 18 個字母"
     },
-    "stylingDescription": {
-        "en": "This means instead of the default \"(JD)\", we show your initials in a block with colour.",
-        
-        "zh": "系統本來預設顯示人名如\"(JD)\"，開啟這個選項後，名字縮寫將會有背景顏色並移到故事前端，以便分辨責任。"
+    "beta": {
+        "en": "Beta features",
+        "zh": "測試功能"
+    },  
+    "styling description": {
+        "en": "This means instead of the default \"(DR)\", we show initials in a block with a coloured background.",
+        "zh": "系統本來預設顯示人名如\"(DR)\"，開啟這個選項後，名字縮寫將會有背景顏色並移到故事前端，以便分辨責任。"
     },
     "logout": {
         "en": "Logout",
         "zh": "登出"
+    },
+    "requesters": {
+        "en": "Show controls for filtering stories by requesters",
+        "zh": "以專案負責人過濾故事"
+    },
+    "requesters description": {
+        "en": "Could be very slow or cause crashing if there are too many stories, consider carefully.",
+        "zh": "如果任務太多可能導致瀏覽器關閉，請謹慎使用"
     },
     "toggle": {
         "en": "Toggle",
