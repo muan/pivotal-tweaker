@@ -1,9 +1,9 @@
 Pivotal Tweaker
 ===============
 
-Pivotal Tweaker is a chrome plugin that is made for a better experience in Pivotal Tracker. 
+Pivotal Tweaker is a chrome plugin made for a better experience in Pivotal Tracker. 
 
-Last deployed: 06 March 2013 / Current version: 0.1.6.4
+Last deployed: 07 March 2013 / Current version: 0.1.6.5
 
 ## Use Tweaker
 
@@ -21,19 +21,19 @@ Last deployed: 06 March 2013 / Current version: 0.1.6.4
 
 ## Contributing
 
-Submit all pull requests against master branch. Edge features please make opt-outable. BE NICE.
+Oh wow, how nice! Edge features please make opt-outable, and it is necessary to be nice to me, thank you.
 
 ## To-dos
 
-1. Costomisable current user tag colour
+1. Customisable current user tag colour
 2. Default focus on one particular user's stories
 
 ## Author/Maintainer
 
 Mu-An Chiou. I am feeding this [puppy](http://youtu.be/UIDb6VBO9os?t=20m19s).
-- [Work](http://copyin.com)
-- [Github](https://github.com/muan)
-- [Twitter](http://twitter.com/muanchiou)
-- [Website](http://muan.co)
+- [I work in Copyin](http://copyin.com)
+- [I put my code here](https://github.com/muan)
+- [Tweeeeet](http://twitter.com/muanchiou)
+- [I write stuff](http://muan.co)
 
-Made with [extensionizr](http://extensionizr.com/).
+Built initially for use of the [Copyin Team](http://copyin.com), made with [extensionizr](http://extensionizr.com/).
