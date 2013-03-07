@@ -154,7 +154,7 @@ chrome.extension.sendRequest({}, function(settings) {
 
     Tweaker.prototype.appendRequesterControls = function ( users ) {
       var tweaker = this;
-      $("#buttonPanel").append( '<li class="tweaker_menu_for_requsters dropdown_menu main_menu copyin_toggle"><div class="toggle_menu toggle_requster_menu"></div></li>' );
+      $("#buttonPanel").append( '<li class="tweaker_menu_for_requsters dropdown_menu main_menu copyin copyin_toggle"><div class="toggle_menu toggle_requster_menu"></div></li>' );
       tweaker.requester_btn = $("<a class='tab copyin button' href='#'>Requesters</a>");
       tweaker.requester_menu = $(".toggle_requster_menu");
       $(".tweaker_menu_for_requsters").append( tweaker.requester_btn );
