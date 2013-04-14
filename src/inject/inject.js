@@ -55,7 +55,7 @@ chrome.extension.sendRequest({}, function(settings) {
 
       var tweaker = this;
       console.log("You are " + tweaker.current_user + ". This is Pivotal Tweaker. ♥");
-      $(".panels_control #view82").after("<section class='cn'></section>")
+      $(".panels_control > div").after("<section class='cn'></section>")
       tweaker.navbar = $(".panels_control .cn")
 
       // create tweaker dropdown
