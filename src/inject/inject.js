@@ -1,14 +1,37 @@
 chrome.extension.sendRequest({}, function(settings) {
-	var readyStateCheckInterval = setInterval(function() {
-  if(!!document.getElementById("layout")) {
-		clearInterval(readyStateCheckInterval);
-
+  var readyStateCheckInterval = setInterval(function() {
+  if( $(".project_loading").get(0).offsetWidth == 0 ) {
+    clearInterval(readyStateCheckInterval);
+    
     function Tweaker () {
-      this.init();
-      this.initHeader();
-      this.appendControls( this.getListOfUsers() );
-      this.checkDOMChangesForResetting();
-    }
+
+      $(".add_story").click();
+      tweaker = this;
+      this.users = [];
+
+      getUsers = setInterval(function() {
+
+        if ($(".requester li span").length > 0) {
+          $(".requester li span").each( function() {
+            tweaker.users.push($(this).text());
+          });
+
+          tweaker.current_user = $(".requester .selection span").text();
+          $(".new.story.item").remove();
+
+          tweaker.users.push("Show All");
+          tweaker.users = _.uniq(tweaker.users);
+          
+          tweaker.init();
+          tweaker.initHeader();
+          tweaker.appendControls( tweaker.users );
+          tweaker.checkDOMChangesForResetting();
+          
+          clearInterval(getUsers);
+        }
+      }, 100);
+      
+    };
 
     Tweaker.prototype.checkDOMChangesForResetting = function() {
       var tweaker = this;
@@ -19,7 +42,7 @@ chrome.extension.sendRequest({}, function(settings) {
             var panel = $("#layout > tbody > tr");
             if ( panel.length == 1 && panel.is(":visible") ) {
               tweaker.resetAll();
-              tweaker.appendControls( tweaker.getListOfUsers() );
+              tweaker.appendControls( tweaker.users );
               clearInterval( reset );
             }
           }, 200);
@@ -29,33 +52,24 @@ chrome.extension.sendRequest({}, function(settings) {
     };
 
     Tweaker.prototype.init = function() {
+
       var tweaker = this;
-      tweaker.current_user = document.getElementsByTagName("head")[0].innerHTML.split(",\"name\":\"")[1].split("\"")[0];
       console.log("You are " + tweaker.current_user + ". This is Pivotal Tweaker. ♥");
+      $(".panels_control #view82").after("<section class='cn'></section>")
+      tweaker.navbar = $(".panels_control .cn")
 
       // create tweaker dropdown
-      tweaker.wrapper = $('<li class="tweaker_menu ready dropdown_menu main_menu copyin_toggle"></li>');
-      $("#buttonPanel").append( tweaker.wrapper );
+      tweaker.wrapper = $('<div class="button menu copyin_toggle"></div>');
+      tweaker.navbar.append( tweaker.wrapper );
       
       // tweaker styling
       tweaker.css = $("<style rel=custom></style>");
       $("head").append( tweaker.css );
 
       // this is user menu
-      tweaker.menu = $("<div class='toggle_user_menu toggle_menu'></div>");
+      tweaker.menu = $("<ul class='toggle_user_menu toggle_menu items'></ul>");
       tweaker.wrapper.append( tweaker.menu );
       
-    };
-
-    Tweaker.prototype.getListOfUsers = function() {
-      var tweaker = this;
-      var users = [];
-      $("a.storyOwnerInitials").each( function() {
-        users.push($(this).attr("title"));
-      });
-      users.push("Show All");
-      users = _.uniq(users);
-      return users;
     };
 
     Tweaker.prototype.resetAll = function() {
@@ -74,32 +88,32 @@ chrome.extension.sendRequest({}, function(settings) {
       }
       if ( settings.tagOn ) { tweaker.giveUsersTags(users); }
       if ( settings.showUnassigned ) { tweaker.bindUnassignedStories(); }
-      if ( settings.requesters ) { tweaker.appendRequesterControls(users); }
+
     }
 
     Tweaker.prototype.bindToggleStoriesForAllMembers = function(users) {
       var tweaker = this;
         
-      tweaker.wrapper.append($("<a class='tab copyin button' href='#'>Toggle Stories</a>"));
+      tweaker.wrapper.prepend($("<label class='anchor copyin' href='#'>Toggle Stories</label>"));
       
       $.each(users, function(index, value) {
-        tweaker.menu.append($("<a href='#' class='copyin owner_c' title='" + value + "'>" + value + "</a>"));
+        tweaker.menu.append($("<li class=item><a href='#' class='copyin owner_c' title='" + value + "'>" + value + "</a></li>"));
         
         $("a.owner_c[title='" + value + "']").click( function() {
           
           if ( settings.effectOn ) { 
-            $(".item[id*='itemList_story']").slideDown();
+            $(".item.story").slideDown();
            } else {
-            $(".item[id*='itemList_story']").show();
+            $(".item.story").show();
           }
 
           $("a.show_unassigned").removeClass("reset");
 
           if ( value != "Show All") {
             if ( settings.effectOn ) {
-              $(".item[id*='itemList_story']:not(:has(a[title='" + value + "']))").slideToggle();
+              $(".story.item:not(:has(a[title='" + value + "']))").slideToggle();
             } else {
-              $(".item[id*='itemList_story']:not(:has(a[title='" + value + "']))").toggle();
+              $(".story.item:not(:has(a[title='" + value + "']))").toggle();
             }
           }
 
@@ -111,15 +125,15 @@ chrome.extension.sendRequest({}, function(settings) {
       var tweaker = this;
 
       tweaker.wrapper.removeClass("dropdown_menu");
-      tweaker.wrapper.append($("<a class='toggle_current_user button copyin' href='#'>My Stories</a>"));
-      $("a.toggle_current_user").click(function() {
+      tweaker.wrapper.after($("<div class='button'><label class='toggle_current_user copyin anchor' href='#'>My Stories</label></div>"));
+      $(".toggle_current_user").click(function() {
 
-        if ( $("a.show_unassigned").hasClass("reset") ) { $("a.show_unassigned").click(); }
+        if ( $(".show_unassigned").hasClass("reset") ) { $(".show_unassigned").click(); }
 
         if ( settings.effectOn ) {
-          $(".item[id*='itemList_story']:not(:has(a[title='" + current_user + "']))").slideToggle();
+          $(".item.story:not(:has(a[title='" + tweaker.current_user + "']))").slideToggle();
         } else {
-          $(".item[id*='itemList_story']:not(:has(a[title='" + current_user + "']))").toggle();
+          $(".item.story:not(:has(a[title='" + tweaker.current_user + "']))").toggle();
         }
 
       });
@@ -130,98 +144,27 @@ chrome.extension.sendRequest({}, function(settings) {
 
       // Add in unassigned button in different places based on dropdown setting
       if ( settings.dropdownOn ) {
-        tweaker.menu.append($('<a class="divider copyin"></li>'));
-        tweaker.menu.append($('<a class="show_unassigned copyin" href="#">&nbsp;</li>'));
+        tweaker.menu.append($('<li class="divider copyin"></li>'));
+        tweaker.menu.append($('<li class=item><a class="show_unassigned copyin" href="#">&nbsp;</a></li>'));
       } else {
-        $("#buttonPanel").append($('<li class="main_menu copyin"><a class="tab button show_unassigned" href="#">&nbsp;</li>'));
+        tweaker.navbar.append($('<div class="button" href="#"><label class="anchor show_unassigned">&nbsp;</label></div>'));
       }
 
-      $("a.show_unassigned").click(function() {
+      $(".show_unassigned").click(function() {
         $(this).toggleClass("reset");
 
         if ($(this).hasClass("reset")) {
-          $(".item[id*='itemList_story']").hide();
+          $(".item.story").hide();
           if ( settings.effectOn ) {
-            $(".item[id*='itemList_story']:not(:has(a.storyOwnerInitials))").slideToggle();
+            $(".item.story:not(:has(a.owner))").slideToggle();
           } else {
-            $(".item[id*='itemList_story']:not(:has(a.storyOwnerInitials))").toggle();
+            $(".item.story:not(:has(a.owner))").toggle();
           }
         } else {
-          $(".item[id*='itemList_story']").show();
+          $(".item.story").show();
         }
       });
     }
-
-    Tweaker.prototype.appendRequesterControls = function ( users ) {
-      var tweaker = this;
-      $("#buttonPanel").append( '<li class="tweaker_menu_for_requsters dropdown_menu main_menu copyin copyin_toggle"><div class="toggle_menu toggle_requster_menu"></div></li>' );
-      tweaker.requester_btn = $("<a class='tab copyin button' href='#'>Requesters</a>");
-      tweaker.requester_menu = $(".toggle_requster_menu");
-      $(".tweaker_menu_for_requsters").append( tweaker.requester_btn );
-      tweaker.requester_btn.click( function() {
-        tweaker.loadRequesters( users );
-      });
-    }
-
-    Tweaker.prototype.loadRequesters = function( users ) {
-      var tweaker = this;
-      var allStories = $(".storyItem");
-      var i = 0;
-      
-      tweaker.requester_btn.unbind("click");
-      $("#buttonPanel").append("<li class=\"loading_req\">Loading <span class=\"count_req\">" + i + "</span>/" + allStories.length + "</li>");
-
-      var checkRequesterOnebyOne = function() {
-        element = $(allStories[i]);
-        element.find(".toggleExpandedButton").click();
-        requester = element.find("select.requester option:selected").text();
-        requesterInitial = $("a.storyOwnerInitials[title='" + requester + "']").first().text().split("/")[0];
-        if( requesterInitial ) {
-          element.attr("data-requester", requester );
-          element.find("a.storyOwnerInitials").append("<span>/"+requesterInitial+"</span>");
-        }
-        element.find(".toggleExpandedButton").click();
-        i++
-        $(".count_req").html(i);
-        
-        if (i == allStories.length) { 
-          clearInterval(check); 
-          $(".loading_req").remove(); 
-          $(".tweaker_menu_for_requsters").addClass("ready");
-        }
-      }
-      var check = setInterval( function() {
-        checkRequesterOnebyOne(); }
-      , 50 );
-
-
-      $.each(users, function(index, value) {
-        if ( value != "Show All") {
-          tweaker.requester_menu.append($("<a href='#' class='requester_c copyin' title='" + value + "'>" + value + "</a>"));
-          $("a.requester_c[title='" + value + "']").click( function() {
-            if ( settings.effectOn ) { 
-              $(".storyItem[data-requester='" + value + "']").parents(".item").slideDown();
-             } else {
-              $(".storyItem[data-requester='" + value + "']").parents(".item").show();
-            }
-
-            if ( settings.effectOn ) {
-              $(".storyItem:not([data-requester='" + value + "'])").parents(".item").slideUp();
-            } else {
-              $(".storyItem:not([data-requester='" + value + "'])").parents(".item").hide();
-            }
-          });
-        }
-      });
-
-      var unassigned = $("<a href='#' class='requester_c copyin requester_unassigned'>Unassigned</a>");
-      tweaker.requester_menu.append( unassigned );
-      unassigned.click(function() {
-        $(".item").show();
-        $(".storyItem[data-requester]").parents(".item").slideUp();
-      });
-
-    };
 
     Tweaker.prototype.giveUsersTags = function(users) {
       var tweaker = this;
@@ -237,9 +180,9 @@ chrome.extension.sendRequest({}, function(settings) {
 
       $.each(users, function(index, value) {
         tweaker.css.append("\
-          a.storyOwnerInitials[title='" + value + "'] {\
-            background-color: " + colourCombination[index][0] + ";\
-            color: " + colourCombination[index][1] + ";\
+          a.owner[title='" + value + "'] {\
+            background-color: " + colourCombination[index][0] + " !important;\
+            color: " + colourCombination[index][1] + " !important;\
           }\
         ");
       });
@@ -251,7 +194,7 @@ chrome.extension.sendRequest({}, function(settings) {
         tweaker.css.append(".item a[title='" + current_user + "'] { color: " + settings.userTextColour + " }");
       }
 
-      var tagcss = "a.storyOwnerInitials {";
+      var tagcss = "a.owner {";
 
       if( settings.tagInline ) {
         tagcss = tagcss + "display: inline;";
@@ -281,13 +224,11 @@ chrome.extension.sendRequest({}, function(settings) {
     Tweaker.prototype.initHeader = function(argument) {
       $("body").append("<div id=\"tongue\" class=\"copyin\"></div>");
       $("#tongue").click( function() {
-        $("#header, #tongue").toggleClass("expanded");
+        $("header.project, #tongue").toggleClass("expanded");
       } );
     }
 
     var PivotalTweaker = new Tweaker();
-
-
 
   }
 	}, 1000);

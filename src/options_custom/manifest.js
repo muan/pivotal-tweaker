@@ -44,21 +44,21 @@ this.manifest = {
             "name": "tagInline",
             "type": "checkbox",
             "label": i18n.get("name placement")
-        },
-        {
-            "tab": i18n.get("settings"),
-            "group": i18n.get("beta"),
-            "name": "requesters",
-            "type": "checkbox",
-            "label": i18n.get("requesters")
-        },
-        {
-            "tab": i18n.get("settings"),
-            "group": i18n.get("beta"),
-            "name": "requestersDescription",
-            "type": "description",
-            "text": i18n.get("requesters description")
-        }
+        }//,
+        // {
+        //     "tab": i18n.get("settings"),
+        //     "group": i18n.get("beta"),
+        //     "name": "requesters",
+        //     "type": "checkbox",
+        //     "label": i18n.get("requesters")
+        // },
+        // {
+        //     "tab": i18n.get("settings"),
+        //     "group": i18n.get("beta"),
+        //     "name": "requestersDescription",
+        //     "type": "description",
+        //     "text": i18n.get("requesters description")
+        // }
         // {
         //     "tab": i18n.get("settings"),
         //     "group": "Your name tag",

@@ -1,6 +1,6 @@
 {
   "name": "Pivotal Tweaker",
-  "version": "0.1.6.5",
+  "version": "0.1.7",
   "manifest_version": 2,
   "description": "Make your pivotal experience much much better.",
   "homepage_url": "http://muan.co",
@@ -19,8 +19,8 @@
   "content_scripts": [
     {
       "matches": [
-        "https://www.pivotaltracker.com/projects/*",
-        "http://www.pivotaltracker.com/projects/*"
+        "https://www.pivotaltracker.com/s/projects/*",
+        "http://www.pivotaltracker.com/s/projects/*"
       ],
       "css": [
         "src/inject/inject.css"
@@ -28,12 +28,12 @@
     },
     {
       "matches": [
-        "https://www.pivotaltracker.com/projects/*",
-        "http://www.pivotaltracker.com/projects/*"
+        "https://www.pivotaltracker.com/s/projects/*",
+        "http://www.pivotaltracker.com/s/projects/*"
       ],
       "js": [
         "src/options_custom/lib/store.js",
-        "js/jquery-1.8.3.min.js",
+        "js/jquery.js",
         "js/underscore.js",
         "src/inject/inject.js"
       ]

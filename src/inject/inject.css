@@ -1,10 +1,4 @@
-#header {
-  height: 2px !important;
-  overflow: hidden;
-  position: absolute !important;
-  width: 100%; padding: 0 20px !important;
-  box-sizing: border-box;
-}
+
 #tongue::before {
   content: "⬇";
   position: absolute;
@@ -28,6 +22,7 @@
   right: 0;
   top: 0;
   cursor: pointer;
+  z-index: 10;
 }
 #tongue.expanded {
   top: 46px;
@@ -35,71 +30,51 @@
 #tongue.expanded::before {
   content: "⬆";
 }
-#header * { opacity: 0; height: 0 !important; pointer-events: none; }
-
-#header, #header + * {
+header > article:first-of-type, header + section {
   -webkit-transition: height 0.2s ease-in-out;
   -moz-transition: height 0.2s ease-in-out;
   -o-transition: height 0.2s ease-in-out;
   transition: height 0.2s ease-in-out;
-  -webkit-transition: padding 0.2s ease-in-out;
-  -moz-transition: padding 0.2s ease-in-out;
-  -o-transition: padding 0.2s ease-in-out;
-  transition: padding 0.2s ease-in-out;
+  -webkit-transition: top 0.2s ease-in-out;
+  -moz-transition: top 0.2s ease-in-out;
+  -o-transition: top 0.2s ease-in-out;
+  transition: top 0.2s ease-in-out;
 }
-#header.expanded {
-  height: 46px !important;
-  overflow: visible !important;
-}
-#header.expanded * {opacity: 1; height: auto !important; pointer-events: auto;}
-#header + * {
-  padding-top: 2px;
-}
-#header.expanded + * {
-  padding-top: 46px;
-}
-#project_name_row {
-display: none;
-}
-#controlPanel { height: auto !important; padding: 8px 0; } 
+header > article:first-of-type { height: 0; overflow: hidden; }
+header.expanded > article:first-of-type { height: auto !important; overflow: visible; }
+header section.name { display: none; }
+header.project { height: auto !important;  }
+header .panels_auxiliary { padding-top: 5px; padding-right: 40px; z-index: 1 }
+header .panels_control { min-height: 30px; margin-top: 3px; }
+
+header + section#panels_index { top: 50px; }
+header.expanded + section#panels_index { top: 100px; }
 * {
 font-family: 'Proxima Nova', 'Helvetica', 'Ariel', san-serif;
 }
 
-a.show_unassigned::before {
+.show_unassigned::before {
   content: "Unassigned Stories";
 }
-a.show_unassigned.reset::before {
+.show_unassigned.reset::before {
   content: "Reset (Show All)";
 }
 
-a.storyOwnerInitials:hover {
+.owner:hover {
   color: #fff;
   text-decoration: none !important;
 }
 
-li.dropdown_menu.copyin_toggle {
+.dropdown_menu.copyin_toggle {
   position: relative;
 }
 
-li.tweaker_menu {
+.tweaker_menu {
   margin-left: 10px;
 }
 
-li.dropdown_menu.copyin_toggle:not(.ready) > a::after {
+.dropdown_menu.copyin_toggle:not(.ready) > a::after {
   display: none;
-}
-li.dropdown_menu.ready.copyin_toggle:hover > a {
-  border-top-left-radius: 3px;
-  border-top-right-radius: 3px;
-  background: #fff;
-  z-index: 3;
-  position: relative;
-  border: 1px solid black;
-  border-bottom: 0;
-  color: #059 !important;
-  margin-top: -1px;
-  margin-left: -1px;
 }
 
 .toggle_menu:hover, li.dropdown_menu.copyin_toggle.ready:active .toggle_menu, li.dropdown_menu.copyin_toggle.ready:hover .toggle_menu, li.dropdown_menu.copyin_toggle.ready a:active .toggle_menu {

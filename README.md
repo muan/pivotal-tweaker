@@ -3,9 +3,9 @@ Pivotal Tweaker
 
 Pivotal Tweaker is a chrome plugin made for a better experience in Pivotal Tracker. 
 
-Last deployed: 07 March 2013 / Current version: 0.1.6.5
+Last deployed: 07 March 2013 / Current version: 0.1.7 (Not yet deployed)
 
-**Currently not working due to Pivotal Tracker's recent update, fixes applying, will update shortly.**
+**Currently broken due to Pivotal Tracker's recent update, has fixed, test pending, will update soon.**
 
 ## Use Tweaker
 
@@ -16,7 +16,7 @@ Last deployed: 07 March 2013 / Current version: 0.1.6.5
 1. Clear name tagging
 2. Toggle member stories within panels
 3. Hidden header bar
-4. Toggle stories by requester
+4. <del>Toggle stories by requester</del>
 
 [Read more here](http://muan.co/2013/02/13/pivotal-tweaker/) and [here](http://muan.co/2013/03/06/pivotal-tweaker-update/).
 
