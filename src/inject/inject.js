@@ -5,8 +5,8 @@ chrome.extension.sendRequest({}, function(settings) {
     
     function Tweaker () {
 
-      if ( story_panels = $("#panels_index").get(0) ) {
-        if ( story_panels.offsetWidth != 0 ) { $(".add_story").click(); }
+      if ( (story_panels = $("#panels_index").get(0)) && $("#panel_icebox.visible").length ) {
+        if ( story_panels.offsetWidth != 0 ) { console.log("clicked!");$(".add_story").click(); }
       }
       tweaker = this;
       tweaker.users = [];
@@ -99,6 +99,7 @@ chrome.extension.sendRequest({}, function(settings) {
       $(".copyin").remove();
       tweaker.css.html("");
       tweaker.init();
+      tweaker.initHeader();
     };
 
     Tweaker.prototype.appendControls = function(users) {
@@ -116,8 +117,9 @@ chrome.extension.sendRequest({}, function(settings) {
 
     Tweaker.prototype.bindToggleStoriesForAllMembers = function(users) {
       var tweaker = this;
-        
-      tweaker.wrapper.prepend($("<label class='anchor copyin' href='#'>Toggle Stories</label>"));
+      if ($(".toggle_label").length == 0) {
+        tweaker.wrapper.prepend($("<label class='anchor copyin toggle_label' href='#'>Toggle Stories</label>"));
+      }
       
       $.each(users, function(index, value) {
         tweaker.menu.append($("<li class=item><a href='#' class='copyin owner_c' title='" + value + "'>" + value + "</a></li>"));
