@@ -27,16 +27,16 @@ chrome.extension.sendRequest({}, function(settings) {
           $(".owner").each(function() { tweaker.users.push( $(this).attr("title") ); });
 
           // If add story form is opened, close it
-          if ( $("#panels_index").get(0).offsetWidth != 0 && $(".requester li span").length > 0) { tweaker.triggerCancelEvent(); }
+          if (  $("#panels_index").get(0).offsetWidth != 0 && $(".new.story .requester li span").length > 0) { tweaker.triggerCancelEvent(); }
 
           tweaker.users.push("Show All");
           tweaker.users = _.reject( _.uniq(tweaker.users), function(name) { return _.isUndefined(name); } );
 
           if ( tweaker.users.length > 1 ) {
-            tweaker.init();
-            tweaker.initHeader();
-            tweaker.appendControls( tweaker.users );
-            tweaker.checkDOMChangesForResetting();
+            try { tweaker.init(); } catch (e) { console.log("Tweaker: Something went wrong. Please contact @muanchiou with - " + e + "."); }
+            try { tweaker.initHeader(); } catch (e) { console.log("Tweaker: Something went wrong. Please contact @muanchiou with - " + e + "."); }
+            try { tweaker.appendControls( tweaker.users ); } catch (e) { console.log("Tweaker: Something went wrong. Please contact @muanchiou with - " + e + "."); }
+            try { tweaker.checkDOMChangesForResetting(); } catch (e) { console.log("Tweaker: Something went wrong. Please contact @muanchiou with - " + e + "."); }
             clearInterval(getUsers);
           }
 
@@ -55,11 +55,10 @@ chrome.extension.sendRequest({}, function(settings) {
         // Create tweaker dropdown
         tweaker.wrapper = $('<div class="button menu copyin copyin_toggle"></div>');
         tweaker.navbar.append( tweaker.wrapper );
-        
         // Create tweaker styling
         tweaker.css = $("<style rel=custom></style>");
         $("head").append( tweaker.css );
-
+        
         // Append users menu
         tweaker.menu = $("<ul class='toggle_user_menu copyin toggle_menu items'></ul>");
         tweaker.wrapper.append( tweaker.menu );
@@ -204,20 +203,29 @@ chrome.extension.sendRequest({}, function(settings) {
       Tweaker.prototype.giveUsersTags = function(users) {
         var tweaker = this;
         var colourCombination = [
-          ["#ecd537", "#000000"],
-          ["#9d454d", "#ffffff"],
-          ["#aaddee", "#000000"],
-          ["#eb9500", "#ffffff"],
-          ["#6c4281", "#ffffff"],
-          ["#227479", "#ffffff"],
-          ["#008833", "#ffffff"]
+          { "bg": "#ecd537", "text":  "#000000"},
+          { "bg": "#9d454d", "text": "#ffffff"},
+          { "bg": "#aaddee", "text": "#000000"},
+          { "bg": "#eb9500", "text": "#ffffff"},
+          { "bg": "#6c4281", "text": "#ffffff"},
+          { "bg": "#227479", "text": "#ffffff"},
+          { "bg": "#008833", "text": "#ffffff"},
+          { "bg": "#c1d260", "text": "#000000"},
+          { "bg": "#ff8181", "text": "#ffffff"},
+          { "bg": "#5b5555", "text": "#ffffff"},
+          { "bg": "#59c9ae", "text": "#000000"},
+          { "bg": "#b7a2cd", "text": "#000000"},
+          { "bg": "#81d076", "text": "#000000"}
         ]
+
+        usersToColoursRatio = Math.ceil( (tweaker.users.length - 1) / colourCombination.length );
+        colourCombination = _.flatten(_.times(usersToColoursRatio, function() { return colourCombination; }));
 
         $.each(users, function(index, value) {
           tweaker.css.append("\
             a.owner[title='" + value + "'] {\
-              background-color: " + colourCombination[index][0] + " !important;\
-              color: " + colourCombination[index][1] + " !important;\
+              background-color: " + colourCombination[index].bg + " !important;\
+              color: " + colourCombination[index].text + " !important;\
             }\
           ");
         });
