@@ -248,9 +248,15 @@ chrome.extension.sendRequest({}, function(settings) {
         }";
 
       tweaker.css.append(tagcss);
+
+      $(".tracker_markup:has(.owner)").each(function() {
+        var nodes = jQuery.parseHTML( $(this).html() );
+        var cropped = _.reject(nodes, function(t) { if(t.wholeText) { if(t.wholeText.match(/\s\(/) || t.wholeText.match(/\)\n/)) { match = true } else { match = false } } else { match = false } return match; } );
+        $(this).html("").append(cropped);
+      });
     }
 
-    Tweaker.prototype.initHeader = function(argument) {
+    Tweaker.prototype.initHeader = function() {
       $("body").append("<div id=\"tongue\" class=\"copyin\"></div>");
       $("#tongue").click( function() {
         $("header.project, #tongue").toggleClass("expanded");
