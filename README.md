@@ -3,7 +3,7 @@ Pivotal Tweaker
 
 Pivotal Tweaker is a chrome plugin made for a better experience in Pivotal Tracker. 
 
-Last deployed: 14 Apr 2013 / Current version: 0.1.7.1
+Last deployed: 15 Apr 2013 / Current version: 0.1.7.2
 
 ## Use Tweaker
 
