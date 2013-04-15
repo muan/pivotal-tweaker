@@ -47,8 +47,8 @@ header.project { height: auto !important;  }
 header .panels_auxiliary { padding-top: 5px; padding-right: 40px; z-index: 1 }
 header .panels_control { min-height: 30px; margin-top: 3px; }
 
-header + section#panels_index { top: 50px; }
-header.expanded + section#panels_index { top: 100px; }
+header ~ section { top: 50px !important; }
+header.expanded ~ section { top: 100px !important; }
 * {
 font-family: 'Proxima Nova', 'Helvetica', 'Ariel', san-serif;
 }

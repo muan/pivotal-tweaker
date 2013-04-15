@@ -17,11 +17,13 @@ chrome.extension.sendRequest({}, function(settings) {
           });
 
           tweaker.current_user = $(".requester .selection span").text();
-          $(".new.story.item").remove();
-
           tweaker.users.push("Show All");
           tweaker.users = _.uniq(tweaker.users);
-          
+
+          var trigger = document.createEvent("Event");
+          trigger.initEvent("click", true, true);
+          $(".cancel").get(0).dispatchEvent(trigger);
+
           tweaker.init();
           tweaker.initHeader();
           tweaker.appendControls( tweaker.users );
