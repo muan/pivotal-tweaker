@@ -5,7 +5,9 @@ chrome.extension.sendRequest({}, function(settings) {
     
     function Tweaker () {
 
-      $(".add_story").click();
+      if ( story_panels = $("#panels_index").get(0) ) {
+        if ( story_panels.offsetWidth != 0 ) { $(".add_story").click(); }
+      }
       tweaker = this;
       this.users = [];
 
@@ -20,9 +22,7 @@ chrome.extension.sendRequest({}, function(settings) {
           tweaker.users.push("Show All");
           tweaker.users = _.uniq(tweaker.users);
 
-          var trigger = document.createEvent("Event");
-          trigger.initEvent("click", true, true);
-          $(".cancel").get(0).dispatchEvent(trigger);
+          if ( $("#panels_index").get(0).offsetWidth != 0 ) { tweaker.triggerCancelEvent(); }
 
           tweaker.init();
           tweaker.initHeader();
@@ -35,33 +35,46 @@ chrome.extension.sendRequest({}, function(settings) {
       
     };
 
+    Tweaker.prototype.triggerCancelEvent = function () {
+      var trigger = document.createEvent("Event");
+      trigger.initEvent("click", true, true);
+      if ($("#maximizes_show .close").length) {
+        closeThis = $("#maximizes_show .close").get(0)
+      } else {
+        closeThis = $(".cancel").get(0)
+      }
+      closeThis.dispatchEvent(trigger);
+    }
+
     Tweaker.prototype.checkDOMChangesForResetting = function() {
       var tweaker = this;
-
-      $("#layout > tbody > tr").first().bind( "DOMNodeRemoved DOMNodeRemovedFromDocument", function() {
-        if ( $("#layout > tbody > tr").length > 1 ) {
-          var reset = setInterval( function() {
-            var panel = $("#layout > tbody > tr");
-            if ( panel.length == 1 && panel.is(":visible") ) {
-              tweaker.resetAll();
-              tweaker.appendControls( tweaker.users );
-              clearInterval( reset );
-            }
-          }, 200);
-        }
+      $("#panels_control > div").bind( "DOMNodeRemovedFromDocument", function() {
+        tweaker.lookForNewNavAndReset()
       });
+    };
 
+    Tweaker.prototype.lookForNewNavAndReset = function() {
+      var tweaker = this;
+      look = setInterval(function() {
+        if ($("#panels_control > div").length) {
+          tweaker.resetAll();
+          tweaker.appendControls( tweaker.users );
+          tweaker.checkDOMChangesForResetting();
+          clearInterval(look);
+        }
+      }, 100)
     };
 
     Tweaker.prototype.init = function() {
 
       var tweaker = this;
       console.log("You are " + tweaker.current_user + ". This is Pivotal Tweaker. ♥");
-      $(".panels_control").append("<section class='cn'></section>")
+      
+      $("#panels_control > div").after("<section class='cn copyin'></section>")
       tweaker.navbar = $(".panels_control .cn")
 
       // create tweaker dropdown
-      tweaker.wrapper = $('<div class="button menu copyin_toggle"></div>');
+      tweaker.wrapper = $('<div class="button menu copyin copyin_toggle"></div>');
       tweaker.navbar.append( tweaker.wrapper );
       
       // tweaker styling
@@ -69,7 +82,7 @@ chrome.extension.sendRequest({}, function(settings) {
       $("head").append( tweaker.css );
 
       // this is user menu
-      tweaker.menu = $("<ul class='toggle_user_menu toggle_menu items'></ul>");
+      tweaker.menu = $("<ul class='toggle_user_menu copyin toggle_menu items'></ul>");
       tweaker.wrapper.append( tweaker.menu );
       
     };
@@ -78,7 +91,8 @@ chrome.extension.sendRequest({}, function(settings) {
       var tweaker = this;
       $(".copyin").remove();
       tweaker.css.html("");
-    }
+      tweaker.init();
+    };
 
     Tweaker.prototype.appendControls = function(users) {
       var tweaker = this;
@@ -103,22 +117,28 @@ chrome.extension.sendRequest({}, function(settings) {
         
         $("a.owner_c[title='" + value + "']").click( function() {
           
-          if ( settings.effectOn ) { 
-            $(".item.story").slideDown();
-           } else {
-            $(".item.story").show();
-          }
+          waitTime = 0;
 
-          $("a.show_unassigned").removeClass("reset");
+          if ( $("#panels_index").get(0).offsetWidth == 0 ) { tweaker.triggerCancelEvent(); waitTime = 500; }
 
-          if ( value != "Show All") {
-            if ( settings.effectOn ) {
-              $(".story.item:not(:has(a[title='" + value + "']))").slideToggle();
-            } else {
-              $(".story.item:not(:has(a[title='" + value + "']))").toggle();
+          setTimeout(function() { 
+            if ( settings.effectOn ) { 
+              $(".item.story").slideDown();
+             } else {
+              $(".item.story").show();
             }
-          }
 
+            $("a.show_unassigned").removeClass("reset");
+
+            if ( value != "Show All") {
+              if ( settings.effectOn ) {
+                $(".story.item:not(:has(a[title='" + value + "']))").slideToggle();
+              } else {
+                $(".story.item:not(:has(a[title='" + value + "']))").toggle();
+              }
+            }
+          }, waitTime);
+          return false;
         });
       });
     }
@@ -147,9 +167,9 @@ chrome.extension.sendRequest({}, function(settings) {
       // Add in unassigned button in different places based on dropdown setting
       if ( settings.dropdownOn ) {
         tweaker.menu.append($('<li class="divider copyin"></li>'));
-        tweaker.menu.append($('<li class=item><a class="show_unassigned copyin" href="#">&nbsp;</a></li>'));
+        tweaker.menu.append($('<li class=item><a class="show_unassigned copyin">&nbsp;</a></li>'));
       } else {
-        tweaker.navbar.append($('<div class="button" href="#"><label class="anchor show_unassigned">&nbsp;</label></div>'));
+        tweaker.navbar.append($('<div class="button"><label class="anchor show_unassigned">&nbsp;</label></div>'));
       }
 
       $(".show_unassigned").click(function() {

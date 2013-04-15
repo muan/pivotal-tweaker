@@ -30,6 +30,7 @@
 #tongue.expanded::before {
   content: "⬆";
 }
+label.copyin, a.copyin { cursor: pointer; }
 header > article:first-of-type, header + section {
   -webkit-transition: height 0.2s ease-in-out;
   -moz-transition: height 0.2s ease-in-out;
