@@ -22,21 +22,24 @@ chrome.extension.sendRequest({}, function(settings) {
           tweaker.current_user = $(".requester .selection span").text() || $(".person_name > a.anchor").text();
 
           // Get users from requester select ( if add story form is present || on story view )
-          $(".requester li span").each( function() { tweaker.users.push($(this).text()); });
+          $(".requester li span").each( function() { tweaker.users.push( tweaker.parseName($(this).text()) ); });
           // Get users from all stories ( if on panels view )
-          $(".owner").each(function() { tweaker.users.push( $(this).attr("title") ); });
+          $(".owner").each(function() { tweaker.users.push( tweaker.parseName($(this).attr("title")) ); });
 
           // If add story form is opened, close it
-          if (  $("#panels_index").get(0).offsetWidth != 0 && $(".new.story .requester li span").length > 0) { tweaker.triggerCancelEvent(); }
+          if (  $(".new.story:visible .requester li span").length > 0) { tweaker.triggerCancelEvent(); }
 
-          tweaker.users.push("Show All");
           tweaker.users = _.reject( _.uniq(tweaker.users), function(name) { return _.isUndefined(name); } );
 
-          if ( tweaker.users.length > 1 ) {
+          if ( tweaker.users.length > 0 ) {
             try { tweaker.init(); } catch (e) { console.log("Tweaker: Something went wrong. Please contact @muanchiou with - " + e + "."); }
             try { tweaker.initHeader(); } catch (e) { console.log("Tweaker: Something went wrong. Please contact @muanchiou with - " + e + "."); }
             try { tweaker.appendControls( tweaker.users ); } catch (e) { console.log("Tweaker: Something went wrong. Please contact @muanchiou with - " + e + "."); }
             try { tweaker.checkDOMChangesForResetting(); } catch (e) { console.log("Tweaker: Something went wrong. Please contact @muanchiou with - " + e + "."); }
+
+            setInterval(function() {
+              tweaker.onUserReset();
+            }, 1000);
             clearInterval(getUsers);
           }
 
@@ -65,10 +68,34 @@ chrome.extension.sendRequest({}, function(settings) {
         
       };
 
+      Tweaker.prototype.onUserReset = function() {
+        var tweaker = this;
+        var temp_users = [];
+        checkUsers = function () {
+          $(".owner[title]").each(function() { temp_users.push( tweaker.parseName($(this).attr("title")) ); });
+          return _.compact( _.uniq(temp_users) );
+        };
+        var difference = _.difference( checkUsers(), tweaker.users );
+        if ( !_.isEmpty( difference ) ) {
+          $.each(difference, function(i, username) { tweaker.users.push(username); });
+          if ( settings.dropdownOn ) { tweaker.bindToggleStoriesForAllMembers( tweaker.users );  }
+          if ( settings.tagOn ) { tweaker.giveUsersTags( tweaker.users ); }
+        }
+      };
+
+      Tweaker.prototype.parseName = function( name ) {
+        if(name) {
+          var parts = name.split(" ");
+          var last_name = parts.pop();
+          return $.trim(parts.join("").replace(/\./g, "") + " " + last_name);
+        }
+      };
+
       Tweaker.prototype.appendControls = function(users) {
         var tweaker = this;
 
         if ( settings.dropdownOn ) { 
+          tweaker.wrapper.prepend($("<label class='anchor copyin' href='#'>Toggle Stories</label>"));
           tweaker.bindToggleStoriesForAllMembers(users); 
         } else {
           tweaker.bindToggleStoriesForCurrentUser(users); 
@@ -124,36 +151,38 @@ chrome.extension.sendRequest({}, function(settings) {
 
       Tweaker.prototype.bindToggleStoriesForAllMembers = function(users) {
         var tweaker = this;
-        tweaker.wrapper.prepend($("<label class='anchor copyin' href='#'>Toggle Stories</label>"));
-        
+        $(".copyin.item:has(.owner_c)").remove();
+
         $.each(users, function(index, value) {
-          tweaker.menu.append($("<li class=item><a href='#' class='copyin owner_c' title='" + value + "'>" + value + "</a></li>"));
-          
-          $("a.owner_c[title='" + value + "']").click( function() {
-            
-            waitTime = 0;
-
-            // If on story view, then close story view and wait for view changes, then execute toggles
-            if ( $("#panels_index").get(0).offsetWidth == 0 ) { tweaker.triggerCancelEvent(); waitTime = 500; }
-
-            setTimeout(function() { 
-              if ( settings.effectOn ) { $(".item.story").slideDown(); } else { $(".item.story").show(); }
-              $("a.show_unassigned").removeClass("reset");
-
-              if ( value != "Show All") {
-                if ( settings.effectOn ) {
-                  $(".story.item:not(:has(a[title='" + value + "']))").slideToggle();
-                } else {
-                  $(".story.item:not(:has(a[title='" + value + "']))").toggle();
-                }
-              }
-            }, waitTime);
-
-            return false;
-          });
-
+          tweaker.menu.prepend($("<li class='copyin item'><a href='#' class='owner_c' title='" + value + "'>" + value + "</a></li>"));
+          $("a.owner_c[title='" + value + "']").click( function() { tweaker.toggleStories( value ); return false; } );
         });
-      }
+        
+        tweaker.menu.find(".item:has(.owner_c):last").after($("<li class='copyin item'><a href='#' class='owner_c' title='Show All'>Show all</a></li>"));
+        $("[title='Show All']").click( function() { tweaker.toggleStories(); return false; } );
+
+      };
+
+      Tweaker.prototype.toggleStories = function( value ) {
+        var tweaker = this;
+        var waitTime = 0;
+
+        // If on story view, then close story view and wait for view changes, then execute toggles
+        if ( $("#panels_index").get(0).offsetWidth == 0 ) { tweaker.triggerCancelEvent(); waitTime = 500; }
+        
+        setTimeout(function() { 
+          if ( settings.effectOn ) { $(".item.story").slideDown(); } else { $(".item.story").show(); }
+          $("a.show_unassigned").removeClass("reset");
+
+          if (value) {
+            if ( settings.effectOn ) {
+              $(".story.item:not(:has(a[title='" + value + "']))").slideToggle();
+            } else {
+              $(".story.item:not(:has(a[title='" + value + "']))").toggle();
+            }
+          }
+        }, waitTime);
+      };
 
       Tweaker.prototype.bindToggleStoriesForCurrentUser = function(users) {
         var tweaker = this;
@@ -187,6 +216,7 @@ chrome.extension.sendRequest({}, function(settings) {
         $(".show_unassigned").click(function() {
           $(this).toggleClass("reset");
 
+          if ( $("#panels_index").get(0).offsetWidth == 0 ) { tweaker.triggerCancelEvent(); }
           if ($(this).hasClass("reset")) {
             $(".item.story").hide();
             if ( settings.effectOn ) {
@@ -218,7 +248,8 @@ chrome.extension.sendRequest({}, function(settings) {
           { "bg": "#81d076", "text": "#000000"}
         ]
 
-        usersToColoursRatio = Math.ceil( (tweaker.users.length - 1) / colourCombination.length );
+        tweaker.css.html("");
+        usersToColoursRatio = Math.ceil( (tweaker.users.length) / colourCombination.length );
         colourCombination = _.flatten(_.times(usersToColoursRatio, function() { return colourCombination; }));
 
         $.each(users, function(index, value) {
@@ -272,7 +303,7 @@ chrome.extension.sendRequest({}, function(settings) {
       };
 
       Tweaker.prototype.initHeader = function() {
-        $("body").append("<div id=\"tongue\" class=\"copyin\"></div>");
+        $("header.project").before("<div id=\"tongue\" class=\"copyin\"></div>");
         $("#tongue").click( function() {
           $("header.project, #tongue").toggleClass("expanded");
         } );
@@ -281,5 +312,5 @@ chrome.extension.sendRequest({}, function(settings) {
       var PivotalTweaker = new Tweaker();
 
     }
-	}, 1000);
+	}, 100);
 });
