@@ -9,7 +9,6 @@ chrome.extension.sendRequest({}, function(settings) {
 
         tweaker = this;
         tweaker.users = [];
-        tweaker.stories_num = $(".story_name").length;
 
         // Try repeatedly to get a list of users until there is more than one (including "Show All")
         getUsers = setInterval(function() {
@@ -72,9 +71,6 @@ chrome.extension.sendRequest({}, function(settings) {
           $.each(difference, function(i, username) { tweaker.users.push(username); });
           if ( settings.dropdownOn ) { tweaker.bindToggleStoriesForAllMembers( tweaker.users );  }
           if ( settings.tagOn ) { tweaker.giveUsersTags( tweaker.users ); }
-        } else if ( tweaker.stories_num != $(".story_name").length ) {
-          if ( settings.tagOn ) { tweaker.giveUsersTags( tweaker.users ); }
-          tweaker.stories_num = $(".story_name").length;
         }
       };
 
@@ -280,13 +276,6 @@ chrome.extension.sendRequest({}, function(settings) {
           }";
 
         tweaker.css.append(tagcss);
-
-        // Removing blank brackets, doesn't work with ajax, could potentially do but is it worthwhile?
-        $(".tracker_markup:has(.owner)").each(function() {
-          var nodes = jQuery.parseHTML( $(this).html() );
-          var htmlWithoutEmptyBrackets = _.reject(nodes, function(t) { if(t.wholeText) { if(t.wholeText.match(/\s\(/) || t.wholeText.match(/\)\n/)) { match = true } else { match = false } } else { match = false } return match; } );
-          $(this).html("").append(htmlWithoutEmptyBrackets);
-        });
       };
 
       Tweaker.prototype.initHeader = function() {
