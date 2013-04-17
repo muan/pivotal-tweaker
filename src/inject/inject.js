@@ -83,6 +83,7 @@ chrome.extension.sendRequest({}, function(settings) {
           if ( settings.tagOn ) { tweaker.giveUsersTags( tweaker.users ); }
         } else if ( tweaker.stories_num != $(".story_name").length ) {
           if ( settings.tagOn ) { tweaker.giveUsersTags( tweaker.users ); }
+          tweaker.stories_num = $(".story_name").length;
         }
       };
 
@@ -292,9 +293,7 @@ chrome.extension.sendRequest({}, function(settings) {
         // Removing blank brackets, doesn't work with ajax, could potentially do but is it worthwhile?
         $(".tracker_markup:has(.owner)").each(function() {
           var nodes = jQuery.parseHTML( $(this).html() );
-          console.log( nodes );
           var htmlWithoutEmptyBrackets = _.reject(nodes, function(t) { if(t.wholeText) { if(t.wholeText.match(/\s\(/) || t.wholeText.match(/\)\n/)) { match = true } else { match = false } } else { match = false } return match; } );
-          console.log( htmlWithoutEmptyBrackets );
           $(this).html("").append(htmlWithoutEmptyBrackets);
         });
       };
