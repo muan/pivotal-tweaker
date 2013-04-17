@@ -7,12 +7,6 @@ chrome.extension.sendRequest({}, function(settings) {
       
       function Tweaker () {
 
-        // If panels are there && icebox is visible
-        if ( (story_panels = $("#panels_index").get(0)) && $("#panel_icebox.visible").length ) {
-          // If panels are visible (i.e. not on story view) then click on add story
-          if ( story_panels.offsetWidth != 0 ) { $(".add_story").click(); }
-        }
-
         tweaker = this;
         tweaker.users = [];
         tweaker.stories_num = $(".story_name").length;
@@ -26,9 +20,6 @@ chrome.extension.sendRequest({}, function(settings) {
           $(".requester li span").each( function() { tweaker.users.push( $(this).text() ); });
           // Get users from all stories ( if on panels view )
           $(".owner").each(function() { tweaker.users.push( $(this).attr("title") ); });
-
-          // If add story form is opened, close it
-          if (  $(".new.story:visible .requester li span").length > 0) { tweaker.triggerCancelEvent(); }
 
           tweaker.users = _.reject( _.uniq(tweaker.users), function(name) { return _.isUndefined(name); } );
 
