@@ -22,11 +22,14 @@ chrome.extension.sendRequest({}, function(settings) {
 
           tweaker.users = _.reject( _.uniq(tweaker.users), function(name) { return _.isUndefined(name); } );
 
+          if( $("#tongue").length == 0 ) {
+            try { tweaker.initHeader(); } catch (e) { console.log("Tweaker: Something went wrong. Please contact @muanchiou with - " + e + "."); }
+            try { tweaker.checkDOMChangesForResetting(); } catch (e) { console.log("Tweaker: Something went wrong. Please contact @muanchiou with - " + e + "."); }
+          }
+
           if ( tweaker.users.length > 0 ) {
             try { tweaker.init(); } catch (e) { console.log("Tweaker: Something went wrong. Please contact @muanchiou with - " + e + "."); }
-            try { tweaker.initHeader(); } catch (e) { console.log("Tweaker: Something went wrong. Please contact @muanchiou with - " + e + "."); }
             try { tweaker.appendControls( tweaker.users ); } catch (e) { console.log("Tweaker: Something went wrong. Please contact @muanchiou with - " + e + "."); }
-            try { tweaker.checkDOMChangesForResetting(); } catch (e) { console.log("Tweaker: Something went wrong. Please contact @muanchiou with - " + e + "."); }
 
             setInterval(function() {
               tweaker.onUserReset();
@@ -34,7 +37,11 @@ chrome.extension.sendRequest({}, function(settings) {
             clearInterval(getUsers);
           }
 
-        }, 100);
+        }, 200);
+      
+        setTimeout( function() { 
+          clearInterval(getUsers); // No, if there's still no users after 10 secs, NO!
+        }, 10000 );
         
       };
 
