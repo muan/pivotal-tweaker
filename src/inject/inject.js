@@ -2,7 +2,7 @@ chrome.extension.sendRequest({}, function(settings) {
   var readyStateCheckInterval = setInterval(function() {
 
     // Start script once loading has been completed
-    if( $(".project_loading").get(0).offsetWidth == 0 ) {
+    if( $("[data-clipboard-ready='true']").length ) {
       clearInterval(readyStateCheckInterval);
       
       function Tweaker () {
