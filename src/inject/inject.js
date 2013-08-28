@@ -158,7 +158,7 @@ chrome.extension.sendMessage({}, function(settings) {
         var waitTime = 0;
 
         // If on story view, then close story view and wait for view changes, then execute toggles
-        if ( $("#panels_index").get(0).offsetWidth == 0 ) { tweaker.triggerCancelEvent(); waitTime = 500; }
+        if ( $("[id*=panel_current]").get(0).offsetWidth == 0 ) { tweaker.triggerCancelEvent(); waitTime = 500; }
         
         setTimeout(function() { 
           if ( settings.effectOn ) { $(".item.story").slideDown(); } else { $(".item.story").show(); }
@@ -206,7 +206,7 @@ chrome.extension.sendMessage({}, function(settings) {
         $(".show_unassigned").click(function() {
           $(this).toggleClass("reset");
 
-          if ( $("#panels_index").get(0).offsetWidth == 0 ) { tweaker.triggerCancelEvent(); }
+          if ( $("[id*=panel_current]").get(0).offsetWidth == 0 ) { tweaker.triggerCancelEvent(); }
           if ($(this).hasClass("reset")) {
             $(".item.story").hide();
             if ( settings.effectOn ) {
