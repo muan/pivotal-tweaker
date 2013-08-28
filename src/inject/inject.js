@@ -1,4 +1,4 @@
-chrome.extension.sendRequest({}, function(settings) {
+chrome.extension.sendMessage({}, function(settings) {
   var readyStateCheckInterval = setInterval(function() {
 
     // Start script once loading has been completed

@@ -6,10 +6,9 @@ var settings = new Store("settings", {
   "requesters": false
 });
 
-chrome.extension.onRequest.addListener(
-  function(request, sender, sendResponse) {
-  	chrome.pageAction.show(sender.tab.id);
-    sendResponse(settings.toObject());
+chrome.extension.onMessage.addListener(
+  function(request, sender, sendMessage) {
+    sendMessage(settings.toObject());
   }
 );
 
