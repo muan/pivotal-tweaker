@@ -1,6 +1,6 @@
 {
   "name": "Pivotal Tweaker",
-  "version": "0.1.8.7",
+  "version": "0.1.8.8",
   "manifest_version": 2,
   "description": "Make your pivotal experience much much better.",
   "homepage_url": "http://muan.co",
@@ -38,5 +38,8 @@
         "src/inject/inject.js"
       ]
     }
+  ],
+  "web_accessible_resources": [
+    "js/jquery.min.map"
   ]
 }
