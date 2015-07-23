@@ -50,7 +50,7 @@ this.manifest = {
             "group": " ",
             "name": "contact",
             "type": "description",
-            "text": "Built by <a href=\"http://twitter.com/muanchiou\" target=\"_blank\">@muanchiou</a>, submit issues or contribute on <a href=\"http://github.com/muan/pivotal-tweaker\" target=\"_blank\">Github</a>."
+            "text": "Built by <a href=\"http://twitter.com/muanchiou\" target=\"_blank\">@muanchiou</a>, submit issues or contribute on <a href=\"http://github.com/muan/pivotal-tweaker\" target=\"_blank\">GitHub</a>."
         }//,
         // {
         //     "tab": i18n.get("settings"),
