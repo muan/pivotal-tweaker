@@ -19,8 +19,8 @@
   "content_scripts": [
     {
       "matches": [
-        "https://www.pivotaltracker.com/s/projects/*",
-        "http://www.pivotaltracker.com/s/projects/*"
+        "https://www.pivotaltracker.com/*/projects/*",
+        "http://www.pivotaltracker.com/*/projects/*"
       ],
       "css": [
         "src/inject/inject.css"
@@ -28,8 +28,8 @@
     },
     {
       "matches": [
-        "https://www.pivotaltracker.com/s/projects/*",
-        "http://www.pivotaltracker.com/s/projects/*"
+        "https://www.pivotaltracker.com/*/projects/*",
+        "http://www.pivotaltracker.com/*/projects/*"
       ],
       "js": [
         "src/options_custom/lib/store.js",

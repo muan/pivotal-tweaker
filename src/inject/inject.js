@@ -2,9 +2,9 @@ chrome.extension.sendMessage({}, function(settings) {
   var readyStateCheckInterval = setInterval(function() {
 
     // Start script once loading has been completed
-    if( $("[data-clipboard-ready='true']").length ) {
+    if( $("[id^='panel_']").length ) {
       clearInterval(readyStateCheckInterval);
-      
+
       function Tweaker () {
 
         tweaker = this;
@@ -38,18 +38,18 @@ chrome.extension.sendMessage({}, function(settings) {
           }
 
         }, 200);
-      
-        setTimeout( function() { 
+
+        setTimeout( function() {
           clearInterval(getUsers); // No, if there's still no users after 10 secs, NO!
         }, 10000 );
-        
+
       };
 
       Tweaker.prototype.init = function() {
         var tweaker = this;
         console.log("You are " + tweaker.current_user + ". This is Pivotal Tweaker. ♥");
 
-        // Create tweaker button group        
+        // Create tweaker button group
         $("#panels_control > div").after("<section class='cn copyin'></section>")
         tweaker.navbar = $(".panels_control .cn")
 
@@ -59,11 +59,11 @@ chrome.extension.sendMessage({}, function(settings) {
         // Create tweaker styling
         tweaker.css = $("<style rel=custom></style>");
         $("head").append( tweaker.css );
-        
+
         // Append users menu
         tweaker.menu = $("<ul class='toggle_user_menu copyin toggle_menu items'></ul>");
         tweaker.wrapper.append( tweaker.menu );
-        
+
       };
 
       Tweaker.prototype.onUserReset = function() {
@@ -84,11 +84,11 @@ chrome.extension.sendMessage({}, function(settings) {
       Tweaker.prototype.appendControls = function(users) {
         var tweaker = this;
 
-        if ( settings.dropdownOn ) { 
+        if ( settings.dropdownOn ) {
           tweaker.wrapper.prepend($("<label class='anchor copyin' href='#'>Toggle Stories</label>"));
-          tweaker.bindToggleStoriesForAllMembers(users); 
+          tweaker.bindToggleStoriesForAllMembers(users);
         } else {
-          tweaker.bindToggleStoriesForCurrentUser(users); 
+          tweaker.bindToggleStoriesForCurrentUser(users);
         }
 
         if ( settings.tagOn ) { tweaker.giveUsersTags(users); }
@@ -147,7 +147,7 @@ chrome.extension.sendMessage({}, function(settings) {
           tweaker.menu.prepend($("<li class='copyin item'><a href='#' class='owner_c' title='" + value + "'>" + value + "</a></li>"));
           $("a.owner_c[title='" + value + "']").click( function() { tweaker.toggleStories( value ); return false; } );
         });
-        
+
         tweaker.menu.find(".item:has(.owner_c):last").after($("<li class='copyin item'><a href='#' class='owner_c' title='Show All'>Show all</a></li>"));
         $("[title='Show All']").click( function() { tweaker.toggleStories(); return false; } );
 
@@ -159,8 +159,8 @@ chrome.extension.sendMessage({}, function(settings) {
 
         // If on story view, then close story view and wait for view changes, then execute toggles
         if ( $("[id*=panel_current]").get(0).offsetWidth == 0 ) { tweaker.triggerCancelEvent(); waitTime = 500; }
-        
-        setTimeout(function() { 
+
+        setTimeout(function() {
           if ( settings.effectOn ) { $(".item.story").slideDown(); } else { $(".item.story").show(); }
           $("a.show_unassigned").removeClass("reset");
 
