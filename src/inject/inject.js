@@ -35,16 +35,12 @@ chrome.extension.sendMessage({}, function(settings) {
 
           if( $("#tongue").length == 0 ) {
             try { tweaker.initHeader(); } catch (e) { console.log("Tweaker: Something went wrong. Please contact @muanchiou with - " + e + "."); }
-            try { tweaker.checkDOMChangesForResetting(); } catch (e) { console.log("Tweaker: Something went wrong. Please contact @muanchiou with - " + e + "."); }
           }
 
           if ( Object.keys(tweaker.users).length ) {
             try { tweaker.init(); } catch (e) { console.log("Tweaker: Something went wrong. Please contact @muanchiou with - " + e + "."); }
             try { tweaker.appendControls( tweaker.users ); } catch (e) { console.log("Tweaker: Something went wrong. Please contact @muanchiou with - " + e + "."); }
 
-            setInterval(function() {
-              tweaker.onUserReset();
-            }, 1000);
             clearInterval(getUsers);
           }
 
@@ -61,12 +57,12 @@ chrome.extension.sendMessage({}, function(settings) {
         console.log("You are " + tweaker.current_user[1] + ". This is Pivotal Tweaker. ♥");
 
         // Create tweaker button group
-        $("#panels_control > div").after("<section class='cn copyin'></section>")
-        tweaker.navbar = $(".panels_control .cn")
+        $(".settings_area").after("<section class='cn-control copyin'></section>")
+        tweaker.controls = $(".cn-control")
 
         // Create tweaker dropdown
-        tweaker.wrapper = $('<div class="button menu copyin copyin_toggle"></div>');
-        tweaker.navbar.append( tweaker.wrapper );
+        tweaker.wrapper = $('<div class="copyin copyin_toggle"></duv>');
+        tweaker.controls.append( tweaker.wrapper );
         // Create tweaker styling
         tweaker.css = $("<style rel=custom></style>");
         $("head").append( tweaker.css );
@@ -77,26 +73,11 @@ chrome.extension.sendMessage({}, function(settings) {
 
       };
 
-      Tweaker.prototype.onUserReset = function() {
-        var tweaker = this
-
-        $(".owner").each(function() {
-          var name = $(this).attr("title")
-          var initials = $(this).text()
-          if (initials && !tweaker.users[initials]) {
-            tweaker.users[initials] = name
-          }
-        })
-
-        if ( settings.dropdownOn ) { tweaker.bindToggleStoriesForAllMembers( tweaker.users ) }
-        if ( settings.tagOn ) { tweaker.giveUsersTags( tweaker.users ) }
-      }
-
       Tweaker.prototype.appendControls = function(users) {
         var tweaker = this;
 
         if ( settings.dropdownOn ) {
-          tweaker.wrapper.prepend($("<label class='anchor copyin' href='#'>Toggle Stories</label>"));
+          tweaker.wrapper.prepend($("<label class='anchor copyin' href='#'><span class='panel_name'>Toggle Stories</span></label>"));
           tweaker.bindToggleStoriesForAllMembers(users);
         } else {
           tweaker.bindToggleStoriesForCurrentUser(users);
@@ -120,27 +101,6 @@ chrome.extension.sendMessage({}, function(settings) {
         }
         closeThis.dispatchEvent(trigger);
       }
-
-      Tweaker.prototype.checkDOMChangesForResetting = function() {
-        // Listen to if the menu has been re-render by Pivotal
-        var tweaker = this;
-        $("#panels_control > div").bind( "DOMNodeRemovedFromDocument", function() {
-          tweaker.lookForNewNavAndReset()
-        });
-      };
-
-      Tweaker.prototype.lookForNewNavAndReset = function() {
-        var tweaker = this;
-        look = setInterval( function() {
-          // If the new menu has been rendered then reset everything based on new information
-          if ($("#panels_control > div").length) {
-            tweaker.resetAll();
-            tweaker.appendControls( tweaker.users );
-            tweaker.checkDOMChangesForResetting();
-            clearInterval(look);
-          }
-        }, 100)
-      };
 
       Tweaker.prototype.resetAll = function() {
         var tweaker = this;
@@ -169,17 +129,14 @@ chrome.extension.sendMessage({}, function(settings) {
         var waitTime = 0;
 
         // If on story view, then close story view and wait for view changes, then execute toggles
-        if ( $("[id*=panel_current]").get(0).offsetWidth == 0 ) { tweaker.triggerCancelEvent(); waitTime = 500; }
+        // if ( $("[id*=panel_current]").get(0).offsetWidth == 0 ) { tweaker.triggerCancelEvent(); waitTime = 500; }
 
         setTimeout(function() {
           if ( settings.effectOn ) { $(".item.story").slideDown(); } else { $(".item.story").show(); }
-          $("a.show_unassigned").removeClass("reset");
+          $(".show_unassigned").removeClass("reset");
 
           if (value) {
-            if ( settings.effectOn ) {
-              $(".story.item:not(:has(a[title='" + value + "']))").slideToggle();
-            } else {
-              $(".story.item:not(:has(a[title='" + value + "']))").toggle();
+            $(".story.item:not(:has(a[title='" + value + "']))").hide();
             }
           }
         }, waitTime);
@@ -189,7 +146,7 @@ chrome.extension.sendMessage({}, function(settings) {
         var tweaker = this;
 
         tweaker.wrapper.removeClass("dropdown_menu");
-        tweaker.wrapper.after($("<div class='button'><label class='toggle_current_user copyin anchor' href='#'>My Stories</label></div>"));
+        tweaker.wrapper.after($("<div class='button'><label class='toggle_current_user copyin anchor' href='#'><span class='panel_name'>My Stories</span></label></div>"));
         $(".toggle_current_user").click(function() {
 
           if ( $(".show_unassigned").hasClass("reset") ) { $(".show_unassigned").click(); }
@@ -209,9 +166,9 @@ chrome.extension.sendMessage({}, function(settings) {
         // Add in unassigned button in different places based on dropdown setting
         if ( settings.dropdownOn ) {
           tweaker.menu.append($('<li class="divider copyin"></li>'));
-          tweaker.menu.append($('<li class=item><a class="show_unassigned copyin">&nbsp;</a></li>'));
+          tweaker.menu.append($('<li class=item><a class="show_unassigned copyin"><span class=panel_name>&nbsp;</span></label></li>'));
         } else {
-          tweaker.navbar.append($('<div class="button"><label class="anchor show_unassigned">&nbsp;</label></div>'));
+          tweaker.controls.append($('<a class="anchor show_unassigned"><span class=panel_name>&nbsp;</span></label>'));
         }
 
         $(".show_unassigned").click(function() {
