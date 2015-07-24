@@ -13,14 +13,23 @@ chrome.extension.sendMessage({}, function(settings) {
         // Try repeatedly to get a list of users until there is more than one (including "Show All")
         getUsers = setInterval(function() {
 
-          tweaker.current_user = $(".requester .selection span").text() || $(".person_name > a.anchor").text();
+          tweaker.current_user = $("h3[title^='mywork']").attr("title").match(/\"(.+)\"/)[1]
 
           // Get users from requester select ( if add story form is present || on story view )
-          $(".requester li span").each( function() { tweaker.users.push( $(this).text() ); });
-          // Get users from all stories ( if on panels view )
-          $(".owner").each(function() { tweaker.users.push( $(this).attr("title") ); });
+          $(".requester .dropdown_description").each( function() {
+            var initial = $(this).text()
+            if (initial && tweaker.users.indexOf(initial) < 0) {
+              tweaker.users.push(initial)
+            }
+          })
 
-          tweaker.users = _.reject( _.uniq(tweaker.users), function(name) { return _.isUndefined(name); } );
+          // Get users from all stories ( if on panels view )
+          $(".owner").each(function() {
+            var initial = $(this).text()
+            if (initial && tweaker.users.indexOf(initial) < 0) {
+              tweaker.users.push(initial)
+            }
+          })
 
           if( $("#tongue").length == 0 ) {
             try { tweaker.initHeader(); } catch (e) { console.log("Tweaker: Something went wrong. Please contact @muanchiou with - " + e + "."); }
@@ -273,9 +282,9 @@ chrome.extension.sendMessage({}, function(settings) {
       };
 
       Tweaker.prototype.initHeader = function() {
-        $("header.project").before("<div id=\"tongue\" class=\"copyin\"></div>");
+        $(".page_header_container").before("<div id=\"tongue\" class=\"copyin\"></div>");
         $("#tongue").click( function() {
-          $("header.project, #tongue").toggleClass("expanded");
+          $("body").toggleClass("_header_expanded");
         } );
       };
 
