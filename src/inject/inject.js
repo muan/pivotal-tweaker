@@ -260,26 +260,13 @@ chrome.extension.sendMessage({}, function(settings) {
 
         var tagcss = "a.owner {";
 
-        if( settings.tagInline ) {
-          tagcss = tagcss + "display: inline;";
-        } else {
-          tagcss = tagcss + "display: block; position: absolute;";
-        }
-
         tagcss = tagcss + "\
-          font-style: normal !important;\
           font-size: 10px;\
-          line-height: : 10px;\
-          height: 16px;\
-          text-align: center;\
           border-radius: 3px;\
           margin-left: 4px;\
           font-weight: 600;\
-          margin-top: -17px;\
           padding: 0 4px;\
           color: #000;\
-          width: auto;\
-          left: 0;\
           }";
 
         tweaker.css.append(tagcss);
