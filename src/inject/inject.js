@@ -8,26 +8,28 @@ chrome.extension.sendMessage({}, function(settings) {
       function Tweaker () {
 
         tweaker = this;
-        tweaker.users = [];
+        tweaker.users = {};
 
         // Try repeatedly to get a list of users until there is more than one (including "Show All")
         getUsers = setInterval(function() {
 
-          tweaker.current_user = $("h3[title^='mywork']").attr("title").match(/\"(.+)\"/)[1]
+          tweaker.current_user = [$("[id^='panel_my_work'] .owner").first().text(), $("[id^='panel_my_work'] .owner").first().attr("title")]
 
           // Get users from requester select ( if add story form is present || on story view )
-          $(".requester .dropdown_description").each( function() {
-            var initial = $(this).text()
-            if (initial && tweaker.users.indexOf(initial) < 0) {
-              tweaker.users.push(initial)
+          $(".requester .dropdown_item").each( function() {
+            var name = $(this).find(".dropdown_label").text()
+            var initials = $(this).find(".dropdown_description").text()
+            if (name && !tweaker.users[initials]) {
+              tweaker.users[initials] = name
             }
           })
 
           // Get users from all stories ( if on panels view )
           $(".owner").each(function() {
-            var initial = $(this).text()
-            if (initial && tweaker.users.indexOf(initial) < 0) {
-              tweaker.users.push(initial)
+            var name = $(this).attr("title")
+            var initials = $(this).text()
+            if (initials && !tweaker.users[initials]) {
+              tweaker.users[initials] = name
             }
           })
 
@@ -36,7 +38,7 @@ chrome.extension.sendMessage({}, function(settings) {
             try { tweaker.checkDOMChangesForResetting(); } catch (e) { console.log("Tweaker: Something went wrong. Please contact @muanchiou with - " + e + "."); }
           }
 
-          if ( tweaker.users.length > 0 ) {
+          if ( Object.keys(tweaker.users).length ) {
             try { tweaker.init(); } catch (e) { console.log("Tweaker: Something went wrong. Please contact @muanchiou with - " + e + "."); }
             try { tweaker.appendControls( tweaker.users ); } catch (e) { console.log("Tweaker: Something went wrong. Please contact @muanchiou with - " + e + "."); }
 
@@ -56,7 +58,7 @@ chrome.extension.sendMessage({}, function(settings) {
 
       Tweaker.prototype.init = function() {
         var tweaker = this;
-        console.log("You are " + tweaker.current_user + ". This is Pivotal Tweaker. ♥");
+        console.log("You are " + tweaker.current_user[1] + ". This is Pivotal Tweaker. ♥");
 
         // Create tweaker button group
         $("#panels_control > div").after("<section class='cn copyin'></section>")
@@ -76,19 +78,19 @@ chrome.extension.sendMessage({}, function(settings) {
       };
 
       Tweaker.prototype.onUserReset = function() {
-        var tweaker = this;
-        var temp_users = [];
-        checkUsers = function () {
-          $(".owner[title]").each(function() { temp_users.push( $(this).attr("title") ); });
-          return _.compact( _.uniq(temp_users) );
-        };
-        var difference = _.difference( checkUsers(), tweaker.users );
-        if ( !_.isEmpty( difference ) ) {
-          $.each(difference, function(i, username) { tweaker.users.push(username); });
-          if ( settings.dropdownOn ) { tweaker.bindToggleStoriesForAllMembers( tweaker.users );  }
-          if ( settings.tagOn ) { tweaker.giveUsersTags( tweaker.users ); }
-        }
-      };
+        var tweaker = this
+
+        $(".owner").each(function() {
+          var name = $(this).attr("title")
+          var initials = $(this).text()
+          if (initials && !tweaker.users[initials]) {
+            tweaker.users[initials] = name
+          }
+        })
+
+        if ( settings.dropdownOn ) { tweaker.bindToggleStoriesForAllMembers( tweaker.users ) }
+        if ( settings.tagOn ) { tweaker.giveUsersTags( tweaker.users ) }
+      }
 
       Tweaker.prototype.appendControls = function(users) {
         var tweaker = this;
@@ -193,9 +195,9 @@ chrome.extension.sendMessage({}, function(settings) {
           if ( $(".show_unassigned").hasClass("reset") ) { $(".show_unassigned").click(); }
 
           if ( settings.effectOn ) {
-            $(".item.story:not(:has(a[title='" + tweaker.current_user + "']))").slideToggle();
+            $(".item.story:not(:has(a[title='" + tweaker.current_user[1] + "']))").slideToggle();
           } else {
-            $(".item.story:not(:has(a[title='" + tweaker.current_user + "']))").toggle();
+            $(".item.story:not(:has(a[title='" + tweaker.current_user[1] + "']))").toggle();
           }
 
         });
@@ -248,23 +250,23 @@ chrome.extension.sendMessage({}, function(settings) {
         ]
 
         tweaker.css.html("");
-        usersToColoursRatio = Math.ceil( (tweaker.users.length) / colourCombination.length );
+        usersToColoursRatio = Math.ceil( (Object.keys(tweaker.users).length) / colourCombination.length );
         colourCombination = _.flatten(_.times(usersToColoursRatio, function() { return colourCombination; }));
 
-        $.each(users, function(index, value) {
+        Object.keys(tweaker.users).forEach(function (initials, index) {
           tweaker.css.append("\
-            a.owner[title='" + value + "'] {\
+            a.owner[title='" + tweaker.users[initials] + "'] {\
               background-color: " + colourCombination[index].bg + " !important;\
               color: " + colourCombination[index].text + " !important;\
             }\
           ");
-        });
+        })
 
         if( settings.userBgColour ) {
-          tweaker.css.append(".item a[title='" + current_user + "'] { background-color: " + settings.userBgColour + " }");
+          tweaker.css.append(".item a[title='" + current_user[1] + "'] { background-color: " + settings.userBgColour + " }");
         }
         if( settings.userTextColour ) {
-          tweaker.css.append(".item a[title='" + current_user + "'] { color: " + settings.userTextColour + " }");
+          tweaker.css.append(".item a[title='" + current_user[1] + "'] { color: " + settings.userTextColour + " }");
         }
 
         var tagcss = "a.owner {";
